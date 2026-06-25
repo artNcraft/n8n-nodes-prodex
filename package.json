@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "description": "Self-hosted n8n ProDex node via ChatGPT subscription device-code auth",
   "license": "MIT",
-  "homepage": "https://github.com/your-org/n8n-nodes-prodex",
+  "homepage": "https://github.com/artNcraft/n8n-nodes-prodex",
   "keywords": [
     "n8n-community-node-package",
     "n8n",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-org/n8n-nodes-prodex.git"
+    "url": "git+https://github.com/artNcraft/n8n-nodes-prodex.git"
   },
   "bin": {
     "n8n-nodes-prodex": "./scripts/device-code-bootstrap.mjs",

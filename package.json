@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-prodex",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "description": "Self-hosted n8n ProDex node via ChatGPT subscription device-code auth",
   "license": "MIT",
   "homepage": "https://github.com/artNcraft/n8n-nodes-prodex",
@@ -16,7 +16,7 @@
     "self-hosted"
   ],
   "author": {
-    "name": "College IT Pro",
+    "name": "Nils",
     "email": "collegeitpro@gmail.com"
   },
   "repository": {

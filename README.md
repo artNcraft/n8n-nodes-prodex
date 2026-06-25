@@ -72,11 +72,25 @@ No CLI or manual environment variables are required for users.
 4. Open the returned `verificationUrl` and enter `userCode` in your browser
 5. Sign in with your ChatGPT account
 
-### Step 2: Export credential values
+### Step 2: Wait for login complete
 
-1. Change the setup node operation to **Export Credential Values**
+1. Change the setup node operation to **Wait for Login Complete**
 2. Execute again after browser login completes
-3. Copy the returned fields into **Credentials → ProDex Auth API**
+3. Confirm the output shows `hasCompleteAuth: true`
+
+### Step 3: Run Codex
+
+Add the **ProDex** node and run your workflow. **Do not select credentials** — leave **Use n8n Credentials** off. Auth is read automatically from `auth.json` on disk.
+
+If tokens expire and refresh fails, repeat the setup flow with **ProDex Setup**.
+
+### Optional: store tokens in n8n Credentials
+
+Only needed if you prefer n8n Credentials over disk auth (e.g. multi-worker setups):
+
+1. ProDex Setup → **Export Credential Values**
+2. Create **Credentials → ProDex Auth API** and paste the returned fields
+3. On the ProDex node, enable **Use n8n Credentials** and select that credential
 
 | Credential field | JSON field from setup node |
 |---|---|
@@ -85,12 +99,6 @@ No CLI or manual environment variables are required for users.
 | ID Token | `idToken` |
 | Account ID | `accountId` |
 | Expires At | `expiresAt` |
-
-### Step 3: Run Codex
-
-Add the **ProDex** node, select your credential, and run your workflow normally.
-
-If tokens expire and refresh fails, repeat the setup flow with **ProDex Setup**.
 
 ## Use with n8n AI Agent (Chat Model)
 

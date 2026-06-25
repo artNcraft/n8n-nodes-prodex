@@ -4,7 +4,6 @@ import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { exportCredentialValuesWithWait, startDeviceLogin, waitForAgentIdentity } from '../../lib/auth/codexLogin';
 import { hasAgentIdentity, hasCompleteCodexAuth, readAuthJson, resolveCodexHome } from '../../lib/auth/codexEnv';
 import { CodexAuthSetupError } from '../../lib/errors';
-import { installSkill, listInstalledSkills, resolveSkillsHome } from '../../lib/skills/skillStore';
 
 export class ProDexSetup implements INodeType {
   description: INodeTypeDescription = {
@@ -31,7 +30,7 @@ export class ProDexSetup implements INodeType {
     properties: [
       {
         displayName:
-          'Setup guide (first time)\n\n1. Create a workflow with Manual Trigger → ProDex Setup.\n2. Operation: Start Device Login → Execute.\n3. Open verificationUrl in your browser and enter userCode. Sign in with ChatGPT.\n4. Change operation to Wait for Login Complete → Execute again.\n5. Confirm the output shows hasCompleteAuth: true.\n6. Add the ProDex node to your workflow and run it. Credentials are optional when login succeeded.\n\nSkills: use Install Skill to add SKILL.md files, then reference them in ProDex → Static Skills or $json.skillNames.\n\nOptional: use Export Credential Values only if you want a backup copy of tokens inside n8n Credentials.',
+          'Setup guide (first time)\n\n1. Create a workflow with Manual Trigger → ProDex Setup.\n2. Operation: Start Device Login → Execute.\n3. Open verificationUrl in your browser and enter userCode. Sign in with ChatGPT.\n4. Change operation to Wait for Login Complete → Execute again.\n5. Confirm the output shows hasCompleteAuth: true.\n6. Add the ProDex node — leave Use n8n Credentials off. No credential picker needed.\n\nSkills: use ProDex → Install Skill, then List Installed Skills or Invoke Skill.\n\nOptional: Export Credential Values only if you want tokens in n8n Credentials and enable Use n8n Credentials on ProDex.',
         name: 'setupGuide',
         type: 'notice',
         default: '',
@@ -49,18 +48,6 @@ export class ProDexSetup implements INodeType {
         type: 'options',
         noDataExpression: true,
         options: [
-          {
-            name: 'Install Skill',
-            value: 'installSkill',
-            description: 'Save a SKILL.md file under codexHome/skills for use in ProDex system prompts',
-            action: 'Install skill',
-          },
-          {
-            name: 'List Installed Skills',
-            value: 'listSkills',
-            description: 'List skills available in codexHome/skills',
-            action: 'List installed skills',
-          },
           {
             name: 'Export Credential Values',
             value: 'exportCredential',
@@ -107,34 +94,6 @@ export class ProDexSetup implements INodeType {
           },
         },
       },
-      {
-        displayName: 'Skill Name',
-        name: 'skillName',
-        type: 'string',
-        default: 'my-skill',
-        description: 'Folder name under codexHome/skills (letters, numbers, hyphens)',
-        displayOptions: {
-          show: {
-            operation: ['installSkill'],
-          },
-        },
-      },
-      {
-        displayName: 'Skill Markdown',
-        name: 'skillMarkdown',
-        type: 'string',
-        typeOptions: {
-          rows: 12,
-        },
-        default:
-          '---\nname: my-skill\ndescription: Describe when Codex should use this skill.\n---\n\n# My Skill\n\nAdd instructions here.',
-        description: 'Full SKILL.md content (YAML frontmatter + markdown body)',
-        displayOptions: {
-          show: {
-            operation: ['installSkill'],
-          },
-        },
-      },
     ],
   };
 
@@ -171,44 +130,6 @@ export class ProDexSetup implements INodeType {
                 accountId: authJson.tokens.account_id,
                 instructions:
                   'Login is complete. Add or run the ProDex node — credentials are optional. Note: hasAgentIdentity may be false; that is normal for ChatGPT device login.',
-              },
-            },
-          ],
-        ];
-      }
-
-      if (operation === 'installSkill') {
-        const skillName = this.getNodeParameter('skillName', 0) as string;
-        const skillMarkdown = this.getNodeParameter('skillMarkdown', 0) as string;
-        const codexHome = resolveCodexHome();
-        const installed = installSkill(codexHome, skillName, skillMarkdown);
-        return [
-          [
-            {
-              json: {
-                ...installed,
-                codexHome,
-                skillsHome: resolveSkillsHome(codexHome),
-                instructions:
-                  `Skill "${installed.name}" installed. Reference it in ProDex → Static Skills or via $json.skillNames.`,
-              },
-            },
-          ],
-        ];
-      }
-
-      if (operation === 'listSkills') {
-        const codexHome = resolveCodexHome();
-        const skills = listInstalledSkills(codexHome);
-        return [
-          [
-            {
-              json: {
-                codexHome,
-                skillsHome: resolveSkillsHome(codexHome),
-                skills,
-                skillNames: skills.map((skill) => skill.name),
-                count: skills.length,
               },
             },
           ],

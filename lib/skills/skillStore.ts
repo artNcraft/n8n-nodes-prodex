@@ -127,7 +127,7 @@ export function loadInstalledSkill(codexHome: string, skillName: string): Parsed
   const skillPath = join(resolveSkillsHome(codexHome), name, SKILL_FILE);
   if (!existsSync(skillPath)) {
     throw new CodexAuthSetupError(
-      `Skill "${name}" is not installed. Use ProDex Setup → Install Skill or List Installed Skills.`,
+      `Skill "${name}" is not installed. Use ProDex → Install Skill, then List Installed Skills to verify.`,
     );
   }
 

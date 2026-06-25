@@ -1,11 +1,12 @@
-import type { INodeType, INodeTypeDescription, ISupplyDataFunctions } from 'n8n-workflow';
+import type { ILoadOptionsFunctions, INodeType, INodeTypeDescription, ISupplyDataFunctions } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { supplyModel } from '@n8n/ai-node-sdk';
 
 import { resolveRunnableAuth } from '../../lib/auth/resolveAuth';
 import { CodexChatModel } from '../../lib/codex/CodexChatModel';
 import { CodexAuthRefreshError, CodexAuthSetupError } from '../../lib/errors';
-import { parseStaticSkillNames } from '../../lib/skills/buildAgentPrompt';
+import { resolveSkillNames } from '../../lib/skills/buildAgentPrompt';
+import { getInstalledSkillLoadOptions } from '../../lib/skills/skillLoadOptions';
 import type { CodexCredentialValues, Personality, ReasoningEffort, SandboxMode } from '../../lib/types/codex';
 
 const DEFAULT_MODELS = [
@@ -20,7 +21,7 @@ export class ProDexChatModel implements INodeType {
     name: 'prodexChatModel',
     icon: { light: 'file:../ProDex/prodex.svg', dark: 'file:../ProDex/prodex.svg' },
     group: ['transform'],
-    version: 1,
+    version: 2,
     subtitle: '={{$parameter["model"]}}',
     description:
       'Use Codex with your ChatGPT subscription as the chat model behind n8n AI Agent and other LangChain nodes.',
@@ -41,13 +42,19 @@ export class ProDexChatModel implements INodeType {
     credentials: [
       {
         name: 'prodexAuthApi',
-        required: false,
+        displayName: 'ProDex Auth API',
+        required: true,
+        displayOptions: {
+          show: {
+            useN8nCredentials: [true],
+          },
+        },
       },
     ],
     properties: [
       {
         displayName:
-          'Setup (first time)\n\n1. Run ProDex Setup → Start Device Login.\n2. Complete browser auth.\n3. Run Wait for Login Complete (hasCompleteAuth: true).\n4. Connect this node to the AI Agent Chat Model input.\n\nCredentials are optional when auth.json already exists on the server.',
+          'Setup (first time)\n\n1. Run ProDex Setup → Start Device Login.\n2. Complete browser auth.\n3. Run Wait for Login Complete (hasCompleteAuth: true).\n4. Connect this node to the AI Agent Chat Model input.\n\nNo credential selection is needed — leave "Use n8n Credentials" off. Install skills with ProDex → Install Skill, then pick them here.',
         name: 'setupGuide',
         type: 'notice',
         default: '',
@@ -66,6 +73,14 @@ export class ProDexChatModel implements INodeType {
         default: '',
       },
       {
+        displayName: 'Use n8n Credentials',
+        name: 'useN8nCredentials',
+        type: 'boolean',
+        default: false,
+        description:
+          'Off by default. When off, auth is read from auth.json after ProDex Setup login — no credential picker needed.',
+      },
+      {
         displayName: 'System Prompt',
         name: 'systemPrompt',
         type: 'string',
@@ -74,13 +89,14 @@ export class ProDexChatModel implements INodeType {
         description: 'Static instructions prepended when AI Agent calls this model',
       },
       {
-        displayName: 'Static Skills',
-        name: 'staticSkills',
-        type: 'string',
-        typeOptions: { rows: 2 },
-        default: '',
-        placeholder: 'my-skill, release-notes',
-        description: 'Installed skill names from ProDex Setup',
+        displayName: 'Skills',
+        name: 'skills',
+        type: 'multiOptions',
+        typeOptions: {
+          loadOptionsMethod: 'getInstalledSkills',
+        },
+        default: [],
+        description: 'Installed skills to apply when AI Agent invokes this model',
       },
       {
         displayName: 'Model',
@@ -146,13 +162,27 @@ export class ProDexChatModel implements INodeType {
     ],
   };
 
+  methods = {
+    loadOptions: {
+      async getInstalledSkills(this: ILoadOptionsFunctions) {
+        return getInstalledSkillLoadOptions();
+      },
+    },
+  };
+
   async supplyData(this: ISupplyDataFunctions, itemIndex: number) {
     try {
+      const useN8nCredentials = this.getNodeParameter('useN8nCredentials', itemIndex, false) as boolean;
       let credentials: CodexCredentialValues | null = null;
-      try {
-        credentials = (await this.getCredentials('prodexAuthApi')) as CodexCredentialValues;
-      } catch {
-        credentials = null;
+      if (useN8nCredentials) {
+        try {
+          credentials = (await this.getCredentials('prodexAuthApi')) as CodexCredentialValues;
+        } catch {
+          throw new NodeOperationError(
+            this.getNode(),
+            'Use n8n Credentials is enabled but no ProDex Auth API credential is selected. Select a credential or turn the toggle off to use disk auth from ProDex Setup.',
+          );
+        }
       }
 
       const { activeBundle, codexHome } = await resolveRunnableAuth(fetch, credentials);
@@ -161,9 +191,7 @@ export class ProDexChatModel implements INodeType {
       const personality = this.getNodeParameter('personality', itemIndex) as Personality;
       const sandbox = this.getNodeParameter('sandbox', itemIndex) as SandboxMode;
       const systemPrompt = this.getNodeParameter('systemPrompt', itemIndex, '') as string;
-      const staticSkills = parseStaticSkillNames(
-        this.getNodeParameter('staticSkills', itemIndex, '') as string,
-      );
+      const skills = resolveSkillNames(this.getNodeParameter('skills', itemIndex, []) as string[]);
       const options = this.getNodeParameter('options', itemIndex, {}) as { timeoutSeconds?: number };
 
       const chatModel = new CodexChatModel(model, {
@@ -174,7 +202,7 @@ export class ProDexChatModel implements INodeType {
         sandbox,
         timeoutMs: (options.timeoutSeconds ?? 300) * 1000,
         systemPrompt,
-        staticSkillNames: staticSkills,
+        staticSkillNames: skills,
       });
 
       return supplyModel(this, chatModel);

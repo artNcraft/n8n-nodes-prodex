@@ -31,6 +31,14 @@ export function parseStaticSkillNames(raw: string | undefined): string[] {
   return uniqueStrings(raw.split(/[\n,]+/));
 }
 
+export function resolveSkillNames(skills: string[] | undefined, legacyStatic = ''): string[] {
+  const fromPicker = uniqueStrings(skills ?? []);
+  if (fromPicker.length > 0) {
+    return fromPicker;
+  }
+  return parseStaticSkillNames(legacyStatic);
+}
+
 export function parseDynamicSkills(value: unknown): InlineSkill[] {
   if (value === undefined || value === null || value === '') {
     return [];

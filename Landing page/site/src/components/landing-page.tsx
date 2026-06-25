@@ -148,7 +148,7 @@ export function LandingPage() {
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
               Track every release of <strong className="text-foreground">n8n-nodes-prodex</strong>{" "}
               — features, fixes, and setup notes — plus book custom workflow builds and 1:1 n8n
-              training from College IT Pro.
+              training from Nils.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -281,7 +281,7 @@ export function LandingPage() {
               Need more than the node?
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Built by <strong className="text-foreground">College IT Pro</strong>. Production n8n
+              Built by <strong className="text-foreground">Nils</strong>. Production n8n
               systems — not demos. Custom workflows and hands-on training on your stack.
             </p>
           </div>
@@ -408,7 +408,7 @@ export function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="font-[family-name:var(--font-display)] font-bold">ProDex for n8n</p>
-            <p className="text-sm text-muted-foreground">Maintainer: College IT Pro</p>
+            <p className="text-sm text-muted-foreground">Maintainer: Nils</p>
           </div>
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
             <a href="mailto:collegeitpro@gmail.com" className="hover:text-foreground">

@@ -4,7 +4,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 
 import { installSkill, listInstalledSkills, parseSkillMarkdown } from '../../lib/skills/skillStore';
-import { buildAgentPrompt, parseStaticSkillNames } from '../../lib/skills/buildAgentPrompt';
+import { buildAgentPrompt, parseStaticSkillNames, resolveSkillNames } from '../../lib/skills/buildAgentPrompt';
 
 describe('skillStore', () => {
   const codexHome = mkdtempSync(join(tmpdir(), 'codex-skills-'));
@@ -77,5 +77,11 @@ describe('buildAgentPrompt', () => {
 
     expect(built.prompt).toContain('Respond briefly.');
     expect(built.appliedSkills).toEqual(['temp (inline)']);
+  });
+
+  it('resolves skill names from picker with legacy fallback', () => {
+    expect(resolveSkillNames(['docx'], 'legacy-skill')).toEqual(['docx']);
+    expect(resolveSkillNames([], 'legacy-skill, other')).toEqual(['legacy-skill', 'other']);
+    expect(resolveSkillNames(undefined, '')).toEqual([]);
   });
 });

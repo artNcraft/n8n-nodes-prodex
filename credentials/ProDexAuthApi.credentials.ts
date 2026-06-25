@@ -21,7 +21,7 @@ export class ProDexAuthApi implements ICredentialType {
   properties: INodeProperties[] = [
     {
       displayName:
-        'Use the ProDex Setup node: run "Start Device Login", complete browser auth, then "Export Credential Values" and paste the returned fields below.',
+        'Optional backup only. ProDex reads auth from disk after ProDex Setup login — you do not need these credentials unless you enable "Use n8n Credentials" on the ProDex node.\n\nTo use this credential type: ProDex Setup → Export Credential Values, then paste the fields below.',
       name: 'bootstrapNotice',
       type: 'notice',
       default: '',

@@ -5,9 +5,6 @@ dist/
 .npmrc
 .DS_Store
 .n8n/
-Landing page/site/node_modules/
-Landing page/site/.next/
-Landing page/site/out/
+Landing page/
 debug-*.log
 *.tgz
-Landing page/site/.git

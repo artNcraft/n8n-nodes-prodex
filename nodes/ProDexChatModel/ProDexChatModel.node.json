@@ -6,7 +6,10 @@
   "resources": {
     "primaryDocumentation": [
       {
-        "url": "https://www.npmjs.com/package/n8n-nodes-prodex"
+        "url": "https://prodex.proday.in"
+      },
+      {
+        "url": "https://github.com/artNcraft/n8n-nodes-prodex"
       }
     ]
   }

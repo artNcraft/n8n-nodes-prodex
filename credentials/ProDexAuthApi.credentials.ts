@@ -11,11 +11,11 @@ export class ProDexAuthApi implements ICredentialType {
 
   displayName = 'ProDex Auth API';
 
-  documentationUrl = 'https://github.com/your-org/n8n-nodes-prodex#authentication';
+  documentationUrl = 'https://prodex.proday.in';
 
   icon: Icon = {
-    light: 'file:../nodes/ProDex/codex.light.svg',
-    dark: 'file:../nodes/ProDex/codex.dark.svg',
+    light: 'file:../nodes/ProDex/prodex.svg',
+    dark: 'file:../nodes/ProDex/prodex.dark.svg',
   };
 
   properties: INodeProperties[] = [

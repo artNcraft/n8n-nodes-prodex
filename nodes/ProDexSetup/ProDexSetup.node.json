@@ -6,7 +6,10 @@
   "resources": {
     "primaryDocumentation": [
       {
-        "url": "https://github.com/your-org/n8n-nodes-prodex#authentication"
+        "url": "https://prodex.proday.in"
+      },
+      {
+        "url": "https://github.com/artNcraft/n8n-nodes-prodex"
       }
     ]
   }

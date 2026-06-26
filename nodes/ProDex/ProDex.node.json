@@ -6,7 +6,10 @@
   "resources": {
     "primaryDocumentation": [
       {
-        "url": "https://developers.openai.com/codex/sdk"
+        "url": "https://prodex.proday.in"
+      },
+      {
+        "url": "https://github.com/artNcraft/n8n-nodes-prodex"
       }
     ]
   }

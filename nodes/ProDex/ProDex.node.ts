@@ -31,7 +31,7 @@ export class ProDex implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'ProDex',
     name: 'prodex',
-    icon: { light: 'file:prodex.svg', dark: 'file:prodex.svg' },
+    icon: { light: 'file:prodex.svg', dark: 'file:prodex.dark.svg' },
     group: ['transform'],
     version: 2,
     usableAsTool: true,
@@ -41,7 +41,7 @@ export class ProDex implements INodeType {
     defaults: {
       name: 'ProDex',
     },
-    documentationUrl: 'https://www.npmjs.com/package/n8n-nodes-prodex',
+    documentationUrl: 'https://prodex.proday.in',
     codex: {
       categories: ['AI'],
       subcategories: {

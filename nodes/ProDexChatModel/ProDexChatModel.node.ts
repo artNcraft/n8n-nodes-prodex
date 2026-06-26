@@ -19,7 +19,7 @@ export class ProDexChatModel implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'ProDex Chat Model',
     name: 'prodexChatModel',
-    icon: { light: 'file:../ProDex/prodex.svg', dark: 'file:../ProDex/prodex.svg' },
+    icon: { light: 'file:../ProDex/prodex.svg', dark: 'file:../ProDex/prodex.dark.svg' },
     group: ['transform'],
     version: 2,
     subtitle: '={{$parameter["model"]}}',
@@ -28,7 +28,7 @@ export class ProDexChatModel implements INodeType {
     defaults: {
       name: 'ProDex Chat Model',
     },
-    documentationUrl: 'https://www.npmjs.com/package/n8n-nodes-prodex',
+    documentationUrl: 'https://prodex.proday.in',
     codex: {
       categories: ['AI'],
       subcategories: {

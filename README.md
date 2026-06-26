@@ -1,31 +1,75 @@
+<div align="center">
+
 # ProDex Node for Self-Hosted n8n
 
-Community node package that runs **OpenAI Codex** inside self-hosted n8n workflows using your **ChatGPT/Codex subscription** (device-code auth), not pay-per-token API billing.
+Run **OpenAI Codex** inside self-hosted n8n workflows — powered by your **Codex subscription**, not pay-per-token API billing.
 
-## Features
+<br />
 
-- **ProDex** root node (prompt in, agent result out)
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-prodex?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/n8n-nodes-prodex)
+[![Releases & Roadmap](https://img.shields.io/badge/Releases_%26_Roadmap-prodex.proday.in-0ea5e9?style=for-the-badge)](https://prodex.proday.in)
+[![Portfolio — Nils](https://img.shields.io/badge/✨_Portfolio-nils.proday.in-8b5cf6?style=for-the-badge)](https://nils.proday.in)
+
+<br />
+
+**Built by [Nils](https://nils.proday.in)** · automation, workflows & integrations
+
+[📦 npm](https://www.npmjs.com/package/n8n-nodes-prodex) · [🌐 prodex.proday.in](https://prodex.proday.in) · [💼 nils.proday.in](https://nils.proday.in) · [GitHub](https://github.com/artNcraft/n8n-nodes-prodex)
+
+</div>
+
+---
+
+## 👤 About the author
+
+<table>
+<tr>
+<td width="60">
+
+**Nils**
+
+</td>
+<td>
+
+This project is built and maintained by **[Nils](https://nils.proday.in)**.
+
+→ **Portfolio:** [**nils.proday.in**](https://nils.proday.in) — projects, work & contact  
+→ **Release tracker:** [**prodex.proday.in**](https://prodex.proday.in) — changelog, install notes, roadmap  
+→ **Questions & feedback:** collegeitpro@gmail.com
+
+</td>
+</tr>
+</table>
+
+> New versions and release notes land on **[prodex.proday.in](https://prodex.proday.in)** first. Pin package versions in production and check the site before upgrading.
+
+---
+
+## ✨ Features
+
+- **ProDex** root node — prompt in, agent result out
 - **ProDex Chat Model** for n8n **AI Agent** (connect to Chat Model input)
 - **ProDex Setup** node for browser login and credential export inside n8n
 - **Token refresh** at runtime when access tokens expire
 - Automatic Codex data directory under n8n's own user folder (no manual env vars)
 - Thread modes: new, continue, resume
-- **Skills system** — install SKILL.md files and reference them in system prompts (static + dynamic)
+- **Skills system** — install `SKILL.md` files and reference them in system prompts (static + dynamic)
 
-## Developer
+---
 
-Questions, bugs, and feature requests: **collegeitpro@gmail.com**
-- Sandbox controls and optional structured JSON output
-
-## Important caveat
+## ⚠️ Important caveat
 
 This package uses Codex through the official `@openai/codex-sdk`, which spawns the Codex CLI and authenticates with ChatGPT subscription tokens. Codex backend endpoints may change without notice. Pin package versions in production.
+
+---
 
 ## Requirements
 
 - Self-hosted n8n (not n8n Cloud)
 - Node.js 18+
 - `@openai/codex` CLI binaries (installed automatically as a dependency on supported platforms)
+
+---
 
 ## Installation
 
@@ -47,7 +91,7 @@ n8n-nodes-prodex
 ### Option B: Custom extensions directory (development)
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/artNcraft/n8n-nodes-prodex.git
 cd n8n-nodes-prodex
 npm install
 npm run build
@@ -60,6 +104,8 @@ The package directory must contain installed dependencies (`@openai/codex`, `@op
 
 For Docker, mount the built package and set `N8N_CUSTOM_EXTENSIONS`. See [`docker/Dockerfile.n8n-codex`](docker/Dockerfile.n8n-codex).
 
+---
+
 ## Authentication (entirely inside n8n)
 
 No CLI or manual environment variables are required for users.
@@ -70,7 +116,7 @@ No CLI or manual environment variables are required for users.
 2. Set operation to **Start Device Login**
 3. Execute the workflow
 4. Open the returned `verificationUrl` and enter `userCode` in your browser
-5. Sign in with your ChatGPT account
+5. Sign in with your Codex account
 
 ### Step 2: Wait for login complete
 
@@ -100,6 +146,8 @@ Only needed if you prefer n8n Credentials over disk auth (e.g. multi-worker setu
 | Account ID | `accountId` |
 | Expires At | `expiresAt` |
 
+---
+
 ## Use with n8n AI Agent (Chat Model)
 
 Connect **ProDex Chat Model** to the **Chat Model** input on the **AI Agent** node:
@@ -123,20 +171,24 @@ ProDex Chat Model ──────→ Chat Model (on AI Agent)
 - Tool nodes connected to AI Agent have limited support — Codex returns text responses, not native LangChain tool-call payloads. For full coding-agent behavior (sandbox, shell, multi-file edits), use the standalone **ProDex** node
 - Default sandbox is **Read Only** for safer chat use
 
+---
+
 ## Skills (install + system prompt)
 
 Skills are stored as `SKILL.md` files under `{codexHome}/skills/{skill-name}/` (Cursor/Codex-compatible format).
 
 ### Install a skill
 
-1. **ProDex Setup** → **Install Skill**
+Use **ProDex** → **Install Skill** (install from GitHub via `npx skills add`), or paste skill markdown manually in older flows.
+
+1. **ProDex** → **Install Skill**
 2. Set **Skill Name** (e.g. `release-notes`)
 3. Paste full **Skill Markdown** (YAML frontmatter + body)
 4. Execute
 
 ### List installed skills
 
-**ProDex Setup** → **List Installed Skills** — returns `skillNames` you can copy into the ProDex node.
+**ProDex** → **List Installed Skills** — returns `skillNames` you can copy into the ProDex node.
 
 ### Use skills in ProDex
 
@@ -154,13 +206,16 @@ Dynamic skills accept:
 
 Output includes `appliedSkills` so you can verify what was loaded.
 
+---
+
 ## Usage
 
 1. Add **ProDex** to your workflow
-2. Select your **ProDex Auth API** credential
-3. Set prompt (default expression reads `chatInput`, `prompt`, or `text`)
-4. Choose model, reasoning effort, sandbox, and thread mode
-5. Execute
+2. Complete **ProDex Setup** once (device login) — credentials are **not** required by default
+3. Leave **Use n8n Credentials** off unless you exported tokens to n8n Credentials on purpose
+4. Set prompt (default expression reads `chatInput`, `prompt`, or `text`)
+5. Choose model, reasoning effort, sandbox, and thread mode
+6. Execute
 
 ### Output fields
 
@@ -181,6 +236,8 @@ Output includes `appliedSkills` so you can verify what was loaded.
 - **Continue Previous Thread**: reuses `threadId` stored in node static data
 - **Resume Thread By ID**: resumes explicit thread ID (Codex sessions under the n8n-managed Codex home directory)
 
+---
+
 ## Manual E2E test
 
 1. Install the node on a self-hosted n8n instance
@@ -191,6 +248,8 @@ Output includes `appliedSkills` so you can verify what was loaded.
 6. Model: `gpt-5.4`, Sandbox: `Read Only`, Thread Mode: `New Thread`
 7. Execute and verify `output` contains `OK` and `threadId` is populated
 
+---
+
 ## Development
 
 ```bash
@@ -199,6 +258,8 @@ npm run build
 npm test
 npm run lint
 ```
+
+---
 
 ## Docker example
 
@@ -211,12 +272,28 @@ docker run -p 5678:5678 -e N8N_CUSTOM_EXTENSIONS=/custom-nodes n8n-codex
 
 Codex runtime files are stored automatically under n8n's user folder (for example `/home/node/.n8n/codex` in the official Docker image).
 
+---
+
 ## Security notes
 
 - Treat credential tokens like passwords
 - Prefer `read_only` sandbox on shared servers
 - Do not set `OPENAI_API_KEY` in n8n if you want subscription billing; it can override ChatGPT auth in some Codex versions
 
+---
+
 ## License
 
 MIT
+
+---
+
+<div align="center">
+
+**[💼 nils.proday.in](https://nils.proday.in)** · **[🌐 prodex.proday.in](https://prodex.proday.in)** · [GitHub](https://github.com/artNcraft/n8n-nodes-prodex) · [npm](https://www.npmjs.com/package/n8n-nodes-prodex)
+
+<br />
+
+Built with care by **[Nils](https://nils.proday.in)**
+
+</div>
